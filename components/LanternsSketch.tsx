@@ -28,7 +28,7 @@ const PAINTINGS = [
   { file: 'girl-pearl.jpg', name: 'Girl with a Pearl Earring', artist: 'Johannes Vermeer' },
   { file: 'mona-lisa.jpg', name: 'Mona Lisa', artist: 'Leonardo da Vinci' },
   { file: 'scream.jpg', name: 'The Scream', artist: 'Edvard Munch' },
-  { file: 'persistence-memory.jpg', name: 'The Persistence of Memory', artist: 'Salvador Dalí' },
+  { file: 'birth-of-venus.jpg', name: 'The Birth of Venus', artist: 'Sandro Botticelli' },
 ]
 
 const CAPTIONS = [

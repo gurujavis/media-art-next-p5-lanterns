@@ -81,9 +81,9 @@ All artworks are in the public domain and sourced from Wikimedia Commons:
    - Source: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Edvard_Munch,_1893,_The_Scream,_oil,_tempera_and_pastel_on_cardboard,_91_x_73_cm,_National_Gallery_of_Norway.jpg)
    - License: Public Domain
 
-6. **The Persistence of Memory** (1931)
-   - Artist: Salvador Dalí
-   - Source: [Wikimedia Commons](https://en.wikipedia.org/wiki/File:The_Persistence_of_Memory.jpg)
+6. **The Birth of Venus** (c. 1485)
+   - Artist: Sandro Botticelli
+   - Source: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg)
    - License: Public Domain
 
 ## Interaction Guide
