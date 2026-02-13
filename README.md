@@ -4,11 +4,14 @@ An immersive mobile-first art installation featuring floating lanterns that carr
 
 ## Features
 
-- **Interactive Lanterns**: Touch to hold lanterns, revealing the artwork with enhanced glow
-- **Constellation Mode**: Stay idle for 15 seconds to see lanterns form a cosmic constellation
-- **Mobile-First**: Optimized for touch interaction on phones
-- **Blend Modes**: Luminous overlapping effects using CSS and p5.js blend modes
-- **Public Domain Art**: Features masterpieces from art history
+- **Interactive Lanterns**: Touch to hold lanterns, revealing the artwork with realistic enhanced glow
+  - Multi-layer radial gradient bloom (orange core + soft halo)
+  - Subtle flicker effect using Perlin noise for organic feel
+  - Additive blending (p5 ADD mode) for authentic luminosity
+- **Aspect-Ratio Preserving Art**: Paintings rendered with "cover" crop to fill frames perfectly without distortion
+- **Constellation Mode**: Stay idle for 15 seconds to see lanterns form a cosmic constellation with a special message
+- **Mobile-First**: Optimized for touch interaction and performance on phones
+- **Public Domain Art**: Features 6 masterpieces from art history
 
 ## Stack
 

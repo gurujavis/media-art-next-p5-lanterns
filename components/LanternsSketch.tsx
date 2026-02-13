@@ -20,6 +20,8 @@ interface Lantern {
   targetX?: number
   targetY?: number
   inConstellation: boolean
+  flickerOffset: number
+  imgAspect: number
 }
 
 const PAINTINGS = [
@@ -90,6 +92,7 @@ export default function LanternsSketch() {
 
         const imgIndex = Math.floor(p.random(images.length))
         const size = p.random(80, 140)
+        const img = images[imgIndex]
 
         lanterns.push({
           x: p.random(size, p.width - size),
@@ -97,7 +100,7 @@ export default function LanternsSketch() {
           vx: 0,
           vy: p.random(-0.5, -1.5),
           size,
-          img: images[imgIndex],
+          img,
           paintingName: `${PAINTINGS[imgIndex].name} - ${PAINTINGS[imgIndex].artist}`,
           speed: p.random(0.5, 1.5),
           swayOffset: p.random(p.TWO_PI),
@@ -106,6 +109,8 @@ export default function LanternsSketch() {
           heldTime: 0,
           originalVy: 0,
           inConstellation: false,
+          flickerOffset: p.random(1000),
+          imgAspect: img.width / img.height,
         })
       }
 
@@ -286,28 +291,95 @@ export default function LanternsSketch() {
         p.push()
         p.translate(l.x, l.y)
 
-        // Draw glow (multiple circles with decreasing opacity)
-        const glowColor = l.held ? [255, 200, 100] : [255, 160, 50]
+        // Flicker effect using Perlin noise
+        const flickerNoise = p.noise(p.frameCount * 0.05 + l.flickerOffset)
+        const flicker = p.map(flickerNoise, 0, 1, 0.85, 1.15)
+        const currentGlow = l.glowIntensity * flicker
+
+        // Draw glow with additive blending
+        p.blendMode(p.ADD)
         p.noStroke()
 
-        for (let i = 3; i > 0; i--) {
-          const glowSize = l.size * (1 + i * 0.3) * l.glowIntensity
-          const opacity = (30 / i) * l.glowIntensity
-          p.fill(glowColor[0], glowColor[1], glowColor[2], opacity)
-          p.ellipse(0, 0, glowSize, glowSize)
+        // Outer halo (large, very faint)
+        const haloColor = l.held ? [255, 180, 80] : [255, 140, 40]
+        for (let i = 0; i < 4; i++) {
+          const haloSize = l.size * (2.5 - i * 0.3) * currentGlow
+          const haloOpacity = (8 / (i + 1)) * currentGlow
+          p.fill(haloColor[0], haloColor[1], haloColor[2], haloOpacity)
+          p.ellipse(0, 0, haloSize, haloSize)
         }
 
-        // Draw painting
-        p.tint(255, l.held ? 255 : 180)
-        p.image(l.img, 0, 0, l.size * 0.7, l.size * 0.7)
+        // Middle bloom (medium glow)
+        const bloomColor = l.held ? [255, 200, 100] : [255, 160, 60]
+        for (let i = 0; i < 3; i++) {
+          const bloomSize = l.size * (1.4 - i * 0.15) * currentGlow
+          const bloomOpacity = (15 / (i + 1)) * currentGlow
+          p.fill(bloomColor[0], bloomColor[1], bloomColor[2], bloomOpacity)
+          p.ellipse(0, 0, bloomSize, bloomSize)
+        }
+
+        // Core glow (bright orange center)
+        const coreColor = l.held ? [255, 220, 120] : [255, 180, 80]
+        for (let i = 0; i < 2; i++) {
+          const coreSize = l.size * (0.9 - i * 0.15) * currentGlow
+          const coreOpacity = (25 / (i + 1)) * currentGlow
+          p.fill(coreColor[0], coreColor[1], coreColor[2], coreOpacity)
+          p.ellipse(0, 0, coreSize, coreSize)
+        }
+
+        // Reset blend mode for painting
+        p.blendMode(p.BLEND)
+
+        // Draw painting with aspect ratio preservation (cover crop)
+        const frameSize = l.size * 0.7
+        const targetAspect = 1 // Square frame
+
+        let drawWidth, drawHeight, offsetX, offsetY
+
+        if (l.imgAspect > targetAspect) {
+          // Image is wider - crop sides
+          drawHeight = frameSize
+          drawWidth = drawHeight * l.imgAspect
+          offsetX = -(drawWidth - frameSize) / 2
+          offsetY = 0
+        } else {
+          // Image is taller - crop top/bottom
+          drawWidth = frameSize
+          drawHeight = drawWidth / l.imgAspect
+          offsetX = 0
+          offsetY = -(drawHeight - frameSize) / 2
+        }
+
+        // Clip to square frame
+        p.push()
+        p.rectMode(p.CENTER)
+        const ctx = p.drawingContext as CanvasRenderingContext2D
+        ctx.save()
+        ctx.beginPath()
+        ctx.rect(-frameSize / 2, -frameSize / 2, frameSize, frameSize)
+        ctx.clip()
+
+        // Draw the image with cover crop
+        p.tint(255, l.held ? 255 : 200)
+        p.image(l.img, offsetX, offsetY, drawWidth, drawHeight)
         p.noTint()
+
+        ctx.restore()
+        p.pop()
 
         // Draw lantern frame
         p.noFill()
-        p.stroke(255, 220, 150, l.held ? 200 : 150)
-        p.strokeWeight(2)
+        p.stroke(255, 220, 150, l.held ? 220 : 160)
+        p.strokeWeight(l.held ? 2.5 : 2)
         p.rectMode(p.CENTER)
-        p.rect(0, 0, l.size * 0.75, l.size * 0.75, 5)
+        p.rect(0, 0, frameSize, frameSize, 5)
+
+        // Add subtle inner glow on frame when held
+        if (l.held) {
+          p.stroke(255, 240, 200, 80)
+          p.strokeWeight(1)
+          p.rect(0, 0, frameSize - 3, frameSize - 3, 4)
+        }
 
         p.pop()
       }
