@@ -330,42 +330,19 @@ export default function LanternsSketch() {
         // Reset blend mode for painting
         p.blendMode(p.BLEND)
 
-        // Draw painting with aspect ratio preservation (cover crop)
+        // Draw painting (preserve aspect ratio; no crop)
+        // "contain" fit inside the lantern frame so different aspect ratios appear at different sizes.
         const frameSize = l.size * 0.7
-        const targetAspect = 1 // Square frame
+        const maxDim = frameSize
+        const iw = (l.img as any).width || maxDim
+        const ih = (l.img as any).height || maxDim
+        const s = Math.min(maxDim / iw, maxDim / ih)
+        const dw = iw * s
+        const dh = ih * s
 
-        let drawWidth, drawHeight, offsetX, offsetY
-
-        if (l.imgAspect > targetAspect) {
-          // Image is wider - crop sides
-          drawHeight = frameSize
-          drawWidth = drawHeight * l.imgAspect
-          offsetX = -(drawWidth - frameSize) / 2
-          offsetY = 0
-        } else {
-          // Image is taller - crop top/bottom
-          drawWidth = frameSize
-          drawHeight = drawWidth / l.imgAspect
-          offsetX = 0
-          offsetY = -(drawHeight - frameSize) / 2
-        }
-
-        // Clip to square frame
-        p.push()
-        p.rectMode(p.CENTER)
-        const ctx = p.drawingContext as CanvasRenderingContext2D
-        ctx.save()
-        ctx.beginPath()
-        ctx.rect(-frameSize / 2, -frameSize / 2, frameSize, frameSize)
-        ctx.clip()
-
-        // Draw the image with cover crop
         p.tint(255, l.held ? 255 : 200)
-        p.image(l.img, offsetX, offsetY, drawWidth, drawHeight)
+        p.image(l.img, 0, 0, dw, dh)
         p.noTint()
-
-        ctx.restore()
-        p.pop()
 
         // Draw lantern frame
         p.noFill()

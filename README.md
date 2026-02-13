@@ -8,7 +8,7 @@ An immersive mobile-first art installation featuring floating lanterns that carr
   - Multi-layer radial gradient bloom (orange core + soft halo)
   - Subtle flicker effect using Perlin noise for organic feel
   - Additive blending (p5 ADD mode) for authentic luminosity
-- **Aspect-Ratio Preserving Art**: Paintings rendered with "cover" crop to fill frames perfectly without distortion
+- **Aspect-Ratio Preserving Art**: Paintings rendered with aspect-preserving "contain" fit (no crop, no distortion)
 - **Constellation Mode**: Stay idle for 15 seconds to see lanterns form a cosmic constellation with a special message
 - **Mobile-First**: Optimized for touch interaction and performance on phones
 - **Public Domain Art**: Features 6 masterpieces from art history
